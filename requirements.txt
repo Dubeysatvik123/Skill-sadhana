@@ -1,0 +1,9 @@
+Django==4.2.6  # Adjust based on your Django version
+mysqlclient==2.2.7  # MySQL adapter for Django
+djangorestframework==3.14.0  # If using Django REST framework
+pytz==2024.1  # Timezone support for Django
+sqlparse==0.4.4  # SQL parsing for Django ORM
+gunicorn==21.2.0  # Production WSGI server
+celery==5.3.4  # Celery for asynchronous tasks
+django-cors-headers==4.3.1  # CORS support for Django
+redis==5.0.1  # If using Redis as a Celery broker
