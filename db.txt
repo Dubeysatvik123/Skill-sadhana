@@ -1,0 +1,172 @@
+CREATE TABLE auth_app_user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(150) UNIQUE NOT NULL,
+    email VARCHAR(254) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('student', 'instructor', 'admin') NOT NULL,
+    unique_id VARCHAR(100) UNIQUE NULL,
+    profile_image VARCHAR(255) NULL,
+    contact VARCHAR(15) NULL,
+    branch VARCHAR(100) NULL,
+    institution VARCHAR(200) NULL,
+    year INT NULL,
+    semester INT NULL,
+    qualification VARCHAR(200) NULL,
+    designation VARCHAR(200) NULL,
+    experience VARCHAR(200) NULL,
+    associated_with VARCHAR(200) NULL,
+    is_active BOOLEAN DEFAULT FALSE
+);
+
+
+
+CREATE TABLE course_category (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL
+);
+
+
+CREATE TABLE course (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    instructor_id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    category_id INT NULL,
+    sub_category VARCHAR(255) NULL,
+    subject VARCHAR(255) NOT NULL,
+    registration_deadline DATE NOT NULL,
+    duration_weeks INT CHECK (duration_weeks BETWEEN 1 AND 8) NOT NULL,
+    abstract TEXT CHECK (LENGTH(abstract) <= 200),
+    intro_video VARCHAR(500) NULL,
+    thumbnail VARCHAR(255) NULL,
+    syllabus TEXT NOT NULL,
+    objectives TEXT NOT NULL,
+    outcomes TEXT NOT NULL,
+    exam_scheme JSON NOT NULL,
+    mode_of_teaching JSON NOT NULL,
+    unique_course_id VARCHAR(100) UNIQUE NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_approved BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (instructor_id) REFERENCES auth_app_user(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES course_category(id) ON DELETE SET NULL
+);
+
+
+
+
+CREATE TABLE course_content (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    module_name VARCHAR(255) NOT NULL,
+    content_type ENUM('video', 'pdf', 'live') NOT NULL,
+    content_url VARCHAR(500) NULL,
+    pdf_file VARCHAR(255) NULL,
+    meet_link VARCHAR(500) NULL,
+    live_schedule DATETIME NULL,
+    FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE
+);
+
+
+
+
+
+CREATE TABLE test (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    instructor_id INT NOT NULL,
+    passing_criteria INT NOT NULL CHECK (passing_criteria BETWEEN 1 AND 100),
+    FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE,
+    FOREIGN KEY (instructor_id) REFERENCES auth_app_user(id) ON DELETE CASCADE
+);
+
+
+
+
+CREATE TABLE question (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    test_id INT NOT NULL,
+    question_text TEXT NOT NULL,
+    option1 VARCHAR(255) NOT NULL,
+    option2 VARCHAR(255) NOT NULL,
+    option3 VARCHAR(255) NOT NULL,
+    option4 VARCHAR(255) NOT NULL,
+    correct_option INT CHECK (correct_option BETWEEN 1 AND 4),
+    FOREIGN KEY (test_id) REFERENCES test(id) ON DELETE CASCADE
+);
+
+
+
+
+
+
+CREATE TABLE enrollment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    progress FLOAT DEFAULT 0.0,
+    is_completed BOOLEAN DEFAULT FALSE,
+    enrolled_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES auth_app_user(id),
+    FOREIGN KEY (course_id) REFERENCES course_management_course(id)
+);
+
+CREATE TABLE test (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    instructor_id INT NOT NULL,
+    passing_criteria INT NOT NULL,
+    FOREIGN KEY (course_id) REFERENCES course_management_course(id),
+    FOREIGN KEY (instructor_id) REFERENCES auth_app_user(id)
+);
+
+CREATE TABLE question (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    test_id INT NOT NULL,
+    question_text TEXT NOT NULL,
+    option1 VARCHAR(255) NOT NULL,
+    option2 VARCHAR(255) NOT NULL,
+    option3 VARCHAR(255) NOT NULL,
+    option4 VARCHAR(255) NOT NULL,
+    correct_option INT NOT NULL,
+    FOREIGN KEY (test_id) REFERENCES test(id)
+);
+
+CREATE TABLE certification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    instructor_id INT NOT NULL,
+    is_approved BOOLEAN DEFAULT FALSE,
+    issued_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES auth_app_user(id),
+    FOREIGN KEY (course_id) REFERENCES course_management_course(id),
+    FOREIGN KEY (instructor_id) REFERENCES auth_app_user(id)
+);
+
+
+
+
+CREATE TABLE discussion_forum (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    student_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES course_management_course(id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES auth_app_user(id) ON DELETE CASCADE
+);
+
+CREATE TABLE discussion_comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    forum_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (forum_id) REFERENCES discussion_forum(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES auth_app_user(id) ON DELETE CASCADE
+);
+
+
+
+
+
