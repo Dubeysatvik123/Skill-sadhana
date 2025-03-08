@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Enrollment, Test, Question, Certification
+from .models import Enrollment, Test, Question, Certification , Performance
 
 class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +20,7 @@ class CertificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certification
         fields = '__all__'
+class Performance(serializers.ModelSerializer):
+    class Meta:
+        models = Performance
+        fields='__all__'
