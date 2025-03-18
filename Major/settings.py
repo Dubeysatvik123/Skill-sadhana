@@ -145,10 +145,3 @@ STATIC_URL = 'static/'
 #     "http://127.0.0.1",  # Alternative for local development
 #     "https://your-frontend-domain.com",  # Replace with actual frontend domain if applicable
 # ]
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  
-EMAIL_PORT = 587  
-EMAIL_USE_TLS = True  
-EMAIL_HOST_USER = 'your_email@gmail.com'  # Your personal email  
-EMAIL_HOST_PASSWORD = 'your_app_password'  # App password (not your email password)
